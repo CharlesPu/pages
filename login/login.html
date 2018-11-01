@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>风机叶片测试远程监控平台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 要用相对于index.php的路径！因为是index.php调用的！！ -->
+    <link rel="stylesheet" href="./login/css/trans_bk_img.css">
+    <link rel="stylesheet" href="./login/css/login.css">
+</head>
+<body onload="ShowTime()">
+    <div id="topheader"></div>
+    <!-- <header>中交第三航务工程局远程监控系统</header> -->
+    <div class="page-container">
+        <h1>风机叶片测试疲劳加载系统</h1>
+        <h2>远程监控平台</h2>
+        <form action="./index.php?pos=login&act=CheckLogin" method="post">
+            <input type="text" name="username" class="username" placeholder="Username" autocomplete="off">
+            <input type="password" name="password" class="password" placeholder="Password" autocomplete="off">
+            <button type="submit">登录</button>
+            <div class="error"><span>+</span></div>
+        </form>
+    </div>
+    <footer><div id="tim"></div>Copyright © 2017-2019 上海中帧机器人控制技术发展有限公司 All Rights Reserved.</footer>
+    <script src="./login/js/jquery-1.8.2.min.js"></script><!-- jquery库 -->
+    <script src="./login/js/jquery_plugin.js"></script><!-- jquery库 -->
+    <script src="./login/js/trans_bk_img.js"></script><!-- 换背景脚本-->
+    <script src="./login/js/error.js"></script><!-- 判断输入错误的脚本-->
+</body>
+</html>
+
