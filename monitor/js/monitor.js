@@ -4,10 +4,6 @@
  * E-mail:pu17rui@sina.com
 ***/
 // jQuery.noConflict();
-jQuery(window).load(function(){
-	// CreateStations();
-
-});
 
 jQuery(document).ready(function(){										
 	ToggleNotifications();	///// SHOW/HIDE NOTIFICATION /////		
@@ -17,11 +13,6 @@ jQuery(document).ready(function(){
 	CloseNotification();///// NOTIFICATION CLOSE BUTTON /////
 	ToggleVermenu();///// COLLAPSED/EXPAND LEFT MENU /////
 	ResponsiveLayout();///// RESPONSIVE /////
-/***********************************************************/
-    // SelectStation();
-	// ShowTables();
-
-
 });
 
 /********************************************************************************************/
@@ -147,58 +138,3 @@ function ResponsiveLayout(argument) {
 		}
 	}
 }
-
-/***********************************************************************************************
-************************************************************************************************
-*******************************************我添加的部分！****************************************
-************************************************************************************************
-***********************************************************************************************/
-
-/**********************************创建工位**************************************/
-// function SelectStation() {
-// 	jQuery("div.header ul.headermenu li").click(function(){
-// 		//先删除其他li的current类
-// 		jQuery("div.header ul.headermenu li").removeClass("current");
-// 		//再给当前li加current类
-// 		jQuery(this).addClass("current");
-// 		//先显示容器
-// 		jQuery("div.vernav, div.centercontent").show();
-// 		jQuery("body").addClass("withvernav");
-
-// 		//给a标签生成对应的链接
-// 		var loc_nam = jQuery("div.left span.slogan").text();
-// 		var sta_id = jQuery(this).attr("id");
-// 		var panel_href="?pos=monitor&loc_name="+loc_nam+"&sta_id="+sta_id+"&act=ShowPanel";
-// 		jQuery("div.vernav li a").attr("href",panel_href);
-// 	});
-// }
-// /**********************************每个工位的ajax请求**************************************/
-// function ShowTables() {
-// 	jQuery("div.header ul.headermenu li").click(function(){
-// 		//先删除其他li的current类
-// 		jQuery("div.header ul.headermenu li").removeClass("current");
-// 		//再给当前li加current类
-// 		jQuery(this).addClass("current");
-// 		//在当前station下请求ajax
-// 		var station=jQuery(this).attr("id");
-// 		jQuery.ajax({
-// 			type:"post",
-// 			url:"./php/monitor.php",
-// 			data:{station_id:station},
-// 			dataType:"text",
-
-// 			success:function(msg,status){
-// 				//先显示容器
-// 				jQuery("div.vernav, div.centercontent").show();
-// 				jQuery("body").addClass("withvernav");
-// 				//再显示表格
-// 				jQuery("div#contentwrapper").html(msg);
-// 			},
-// 			error:function(msg,status){
-// 				jQuery("div.vernav, div.centercontent").hide();
-// 				jQuery("body").removeClass("withvernav");
-// 				alert("msg:"+msg+"\n"+"status:"+status);
-// 			}
-// 		});
-// 	});
-// }

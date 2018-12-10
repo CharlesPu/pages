@@ -18,7 +18,6 @@ function UpdateAmplitude(series, chart, co_nam, sta_id) {
 
 		success:function(msg, status){
 			// alert(msg);
-			// msg = eval('(' + msg + ')'); //decode json
 			var x = (new Date()).getTime(); // 当前时间
 			// var	y = Math.random();          // 随机值
 			var y = parseFloat(msg);

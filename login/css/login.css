@@ -50,36 +50,6 @@ h1,h2{
 h2 {
     font-size: 25px;
 }
-/*.page-container h1{
-    color: rgba(250,130,1,0.8);
-    text-shadow: 1px 1px white;
-}*/
-/*
-h1 {
-    font-size: 30px;
-    font-weight: 700;
-    text-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
-h1:after, 
-h1:before {
-    content: "";
-    height: 1px;
-    position: absolute;
-    top: 30.4%;
-    width: 110px;   
-}
-h1:after {      
-    right: 42%;
-    background: -ms-linear-gradient(left, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1));/* Internet Explorer 10+!!!!!!!!!!!
-    background: -moz-linear-gradient(left, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1));
-    background: -webkit-linear-gradient(left, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1));
-}
-h1:before {
-    left: 42%;
-    background: -ms-linear-gradient(right, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1));/* Internet Explorer 10+!!!!!!!!!!!
-    background: -moz-linear-gradient(right, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1));
-    background: -webkit-linear-gradient(right, rgba(0,200,0,1), rgba(255,255,255,1),rgba(100,0,200,0.1))
-}*/
 
 form {
     position: relative;

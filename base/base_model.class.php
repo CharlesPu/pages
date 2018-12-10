@@ -6,11 +6,11 @@
 				die('could not connect:'.$db->connect_error);
 			$db->set_charset('utf-8');
 
-			$res=$db->query("SELECT * FROM User where User_name = '{$name}'");
+			$res=$db->query("SELECT * FROM User where User_Name = '{$name}'");
 			$row=$res->fetch_array();
 			$db->close();
 
-			return $row[User_session_id];
+			return $row[User_SessionID];
 		}
 
 	}

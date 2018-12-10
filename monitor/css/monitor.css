@@ -1,8 +1,3 @@
-/***
- * Created by: Mienard Lumaad
- * Date: May 15, 2012
- * Website: http://themepixels.com/
-***/
 
 /***** 1. RESET STYLE *****/
 /**************************/
@@ -106,7 +101,7 @@ body.withmenucoll2 { background-position: 35px 0; } /* with menu style 2 in coll
 .last{ margin-right:0 !important; clear:right; }
 footer.copyrights{
 	position: relative;
-	top: 1000px;
+	top: 800px;
 	/*left: 43%;*/
 	height:40px;
 	text-align: center;
