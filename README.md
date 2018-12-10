@@ -8,7 +8,7 @@ It is the website code of my master's topic, which is a research on RMCS based o
 **description:**  
 * The base website framework of blade fatigue test RMCS, include data monitoring and video monitoring.
 * Data monitoring is based on MVC module, and consists of **/base**, **/login**, **home** and **/monitor**, 
-  each of which is consists of **/css**, **/js**, **/php**, **/img** and ***.html**.
+  each of which consists of **/css**, **/js**, **/php**, **/img** and ***.html**.
 * Video monitoring is based on [**HIKPusher**](https://github.com/CharlesPu/HIKPusher) and **nginx-rtmp-module**.
 * There is only the **panel** part in data monitoring need to be finished, which is related to the storage in database.
 
