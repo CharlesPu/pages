@@ -29,66 +29,102 @@ class MonitorController extends BaseController{
 				require POSITION_PATH.$obj_temp.".html"; 
 		}
 	}
-	public function GetBladeAmAction() {
+	public function GetAllDataAction(){
 		session_start();
 		$name 		= $_SESSION['username'];
 		$user_type	= $_SESSION['usertype'];
-		$co_id		= $_SESSION['co_id'];
-		$co_name 	= $_GET['co_name'];
+		$co_id 		= $_SESSION['co_id'];
 		$sta_id		= $_GET['sta_id'];
 		$obj_temp	= $_GET['obj'];
-
+		
 		$monitor_model = new MonitorModel();
-		$ret = $monitor_model->GetLatestBladeAm($co_id, $sta_id);
-
-		echo $ret;
+		$res_bl_pos 	= $monitor_model->GetRTBladePosi($co_id, $sta_id);
+		$res_sys_state 	= $monitor_model->GetSysState($co_id, $sta_id);
+		$res_cy_pos 	= $monitor_model->GetRTCyPosi($co_id, $sta_id);
+		$res = array("BladePosi"=>$res_bl_pos, "SysState"=>$res_sys_state, "CyPosi"=>$res_cy_pos);
+		echo json_encode($res);
 	}
-	// public function GetAllDataAction(){
-	// 	session_start();
-	// 	$name = $_SESSION['username'];
-	// 	$loc_id = $_SESSION['loc_id'];
-	// 	$loc_nam=$_GET['loc_name'];
-	// 	$sta_id=$_GET['sta_id'];
-	// 	$obj_temp=$_GET['obj'];
+	/********************************************** control ***************************************/
+	public function SetSysParamsAction(){
+		session_start();
+		$name = $_SESSION['username'];
+		$sessid_new = $_SESSION['usersessionid'];
 		
-	// 	$monitor_model = new MonitorModel();
-	// 	$res_cy = $monitor_model->GetCylindersData($name,$loc_id,$sta_id);
-	// 	$res_mt = $monitor_model->GetMotorsData($name,$loc_id,$sta_id);
-	// 	$res_ag = $monitor_model->GetAnglesData($name,$loc_id,$sta_id);
-	// 	$res_at = $monitor_model->GetAlertsData($name,$loc_id,$sta_id);
-	// 	$res = array("Cylinders"=>$res_cy, "Motors"=>$res_mt, "Angles"=>$res_ag, "Alerts"=>$res_at);
-	// 	echo json_encode($res);
-	// }
-	// public function ControlDevicesAction(){
-	// 	session_start();
-	// 	$name = $_SESSION['username'];
-	// 	$sessid_new = $_SESSION['usersessionid'];
-		
-	// 	if (empty($name)) { //avoid illegal access!!! 
-	// 		BaseController::GoToURL('?pos=login');
-	// 	}else if(BaseController::CheckSessionIdAction($name,$sessid_new)){//如果重复登录！
-	// 		session_destroy();//销毁此次会话，重新开始！
-	// 		BaseController::GoToURL('?pos=login','您已在别处登录，请重新登录!');	
-	// 	}else{
-	// 		$res = 0;
-	// 		$json_obj = $_POST['json_obj'];
-	// 		$loc_id = $_SESSION['loc_id'];
-	// 		$loc_nam=$_GET['loc_name'];
-	// 		$sta_id=$_GET['sta_id'];
-	// 		$obj_temp=$_GET['obj'];
-	// 		$monitor_model = new MonitorModel();
-	// 		for ($i=0; $i < count($json_obj); $i++) { 
-	// 			$dev_nam = $json_obj[$i]['dev_name'];
-	// 			$dev_id = $json_obj[$i]['dev_id'];
-	// 			$ctrl_para = $json_obj[$i]['ctrl_param'];
-	// 			$ctrl_val = $json_obj[$i]['ctrl_value'];
-	// 			$res += $monitor_model->SetControlVal($name, $loc_id, $sta_id, $dev_nam, $dev_id, $ctrl_para, $ctrl_val);
-	// 		}	
-	// 		// $res = $monitor_model->CountNums($name);
-	// 		echo $res;
-	// 	}
+		BaseController::CheckLegality($name, $sessid_new);
+		$co_id 		= $_SESSION['co_id'];
+		$user_type	= $_SESSION['usertype'];
+		$sta_id 	= $_GET['sta_id'];
+		$obj_temp 	= $_GET['obj'];
 
-	// }
+		if ($user_type != 'admin' && $user_type != 'firm') {
+			echo -1;
+		}else {
+			$blade_am_set = $_POST[blade_am_set];
+			$blade_cnt_set = $_POST[blade_cnt_set];
+			$cylinder_am_set = $_POST[cylinder_am_set];
+			$cylinder_t_set = $_POST[cylinder_t_set];
+
+			$monitor_model = new MonitorModel();
+			$monitor_model->SetSysControlVal($co_id,$sta_id,$blade_am_set,$blade_cnt_set,$cylinder_am_set,$cylinder_t_set);
+			echo 0;
+			// echo "<script>history.go(-1);</script>";
+		}	
+	}
+	public function SetCyOnetimeClkAction() {
+		session_start();
+		$name = $_SESSION['username'];
+		$sessid_new = $_SESSION['usersessionid'];
+		
+		BaseController::CheckLegality($name, $sessid_new);
+		$co_id 		= $_SESSION['co_id'];
+		$user_type	= $_SESSION['usertype'];
+		$sta_id 	= $_GET['sta_id'];
+		$obj_temp 	= $_GET['obj'];
+
+		if ($user_type != 'admin' && $user_type != 'firm') {
+			echo -1;
+		}else {
+			$cy_id 	= $_POST[cy_id];
+			$act = null;
+			if ($_POST[act] == 'jog-up') {
+				$act = 'JogUp';
+			}else if ($_POST[act] == 'jog-down') {
+				$act = 'JogDown';
+			}else if ($_POST[act] == 'reset-to-0') {
+				$act = 'Reset';
+			}
+
+			$monitor_model = new MonitorModel();
+			$monitor_model->SetCyControlVal($co_id,$sta_id,$cy_id,$act,null,null);
+			echo 0;
+			// echo "<script>history.go(-1);</script>";
+		}
+	}
+	public function SetSingleCyParamsAction() {
+		session_start();
+		$name = $_SESSION['username'];
+		$sessid_new = $_SESSION['usersessionid'];
+		
+		BaseController::CheckLegality($name, $sessid_new);
+		$co_id 		= $_SESSION['co_id'];
+		$user_type	= $_SESSION['usertype'];
+		$sta_id 	= $_GET['sta_id'];
+		$obj_temp 	= $_GET['obj'];
+
+		if ($user_type != 'admin' && $user_type != 'firm') {
+			echo -1;
+		}else {
+			$cy_id 		  = $_POST[cy_id];
+			$single_cy_am = $_POST[single_cy_am];
+			$single_cy_t  = $_POST[single_cy_t];
+
+			$monitor_model = new MonitorModel();
+			$res = $monitor_model->SetCyControlVal($co_id,$sta_id,$cy_id,null,$single_cy_am,$single_cy_t);
+			echo 0;
+			// echo "<script>history.go(-1);</script>";
+		}
+	}
+	/********************************************** IPC ***************************************/
 	public function GetIPCInfoAction(){
 		session_start();
 		$name = $_SESSION['username'];
@@ -96,7 +132,7 @@ class MonitorController extends BaseController{
 		
 		BaseController::CheckLegality($name, $sessid_new);
 		$co_id 		= $_SESSION['co_id'];
-		$co_nam 	= $_GET['co_name'];
+		$user_type	= $_SESSION['usertype'];
 		$sta_id 	= $_GET['sta_id'];
 		$obj_temp 	= $_GET['obj'];
 		$monitor_model = new MonitorModel();
@@ -128,20 +164,17 @@ class MonitorController extends BaseController{
 		set_time_limit(0);
 		 
 		$service_port = 9001;
-		$address = "127.0.0.1";
-		 
+		$address = "127.0.0.1"; 
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if ($socket < 0){
 			// echo "socket_create() failed: reason: " . socket_strerror($socket) . "/n";
 			return 1;
 		}
-
 		$result = socket_connect($socket, $address, $service_port);
 		if ($result < 0){
 			// echo "socket_connect() failed./nReason: ($result) " . socket_strerror($result) . "/n";
 			return 2;
-		}
-		 
+		}	 
 		$msgs = $act_para;
 		$msgs .= ':';
 		$msgs .= $ipc_dev_id;
@@ -150,7 +183,6 @@ class MonitorController extends BaseController{
 			// echo "socket_write() failed: reason: " . socket_strerror($socket) . "/n";
 			return 3;
 		}
-
 		socket_close($socket);
 		
 		return 0;

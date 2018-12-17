@@ -50,36 +50,79 @@
     <div class="centercontent" >      
         <div id="contentwrapper" class="contentwrapper">
             <div id="blade-amplitude">
-                <h1>振幅显示区</h1>
+                <h1>叶片位置区</h1>
                 <div id="blade-amplitude-chart"></div>
             </div>
-            <div id="blade-param">
-                <h1>叶片参数区</h1>
-                <p></p>
-            </div>
             <div id="sys-state">
-                <h1>系统运行状态</h1>
+                <h1>系统参数状态区</h1>
+                <div id="sys-para">
+                    <div id="blade-am" class="cell">
+                        <p>叶片实时振幅:</p><span>0.00</span><p>mm</p>
+                    </div>
+                    <div id="blade-eff-cnt" class="cell">
+                        <p>有效加载次数:</p><span>0</span><p>次</p>
+                    </div>
+                    <div id="cylinder-am" class="cell">
+                        <p>电动缸实时振幅:</p><span>0.00</span><p>mm</p>
+                    </div>
+                    <div id="cylinder-eff-cnt" class="cell">
+                        <p>电动缸振动次数:</p><span>0</span><p>次</p>
+                    </div>
+                </div>
+                <div id="sys-alarm">
+                    <div id="alarm_no" class="cell"><p>报警号:</p><span></span></div>
+                    <div class="cell"><p>报警内容:</p></div>
+                    <div id="alarm_ctx"></div>
+                </div>
             </div>
-            <div id="mass">
-                <h1>质量块区</h1>
+            <div id="cylinder">
+                <h1>电动缸区</h1>
+                <?php 
+                    for($i = 1; $i < 5; $i++){
+                        echo "<div id='cy-$i' class='cy'>";
+                        echo    "<h1>".strtoupper(chr($i + 64))."</h1>";
+                        echo    "<div class='ruler'></div><div class='arrow'></div>";
+                        echo    "<div class='set-jog'><button class='jog-up clk'></button><button class='jog-down clk'></button></div>";
+                        echo    "<button class='reset-to-0 clk'>归零</button>";
+                        echo    "<div class='single-cy-am cell'>";
+                        echo         "<p>振幅</p><input type='text' name=''><p>mm</p>";
+                        echo     "</div>";
+                        echo     "<div class='single-cy-t cell'>";
+                        echo         "<p>周期</p><input type='text' name=''><p>ms</p>";     
+                        echo     "</div>";
+                        echo     "<button class='run'>运行</button>";
+                        echo "</div>";
+                    }
+                ?>
             </div>
-            <div id="sys-param">
+            <div id="sys-param-ctrl">
                 <h1>参数设置区</h1>
+                <div id="sys-param-set">
+                    <div id="blade-am-set" class="cell">
+                        <p>叶片目标振幅</p><input type="text" name="bl_am_set" class="" placeholder="" autocomplete="off"><p>mm</p>
+                    </div>
+                    <div id="blade-cnt-set" class="cell">
+                        <p>叶片目标振动次数</p><input type="text" name="bl_cnt_set" class="" placeholder="" autocomplete="off"><p>次</p>
+                    </div>
+                    <div id="cylinder-am-set" class="cell">
+                        <p>电动缸目标振幅</p><input type="text" name="cy_am_set" class="" placeholder="" autocomplete="off"><p>mm</p>
+                    </div>
+                    <div id="cylinder-t-set" class="cell">
+                        <p>电动缸目标周期</p><input type="text" name="cy_t_set" class="" placeholder="" autocomplete="off"><p>ms</p>
+                    </div>
+                    <button>提交</button>
+                </div>         
             </div>
-            <!-- <div id="strain-gauge">
-                <h1>应变片区</h1>
-            </div> -->
         </div>
 	</div>  
 </div>
 <footer class="copyrights">Copyright © 2017-2019 上海中帧机器人控制技术发展有限公司 All Rights Reserved.</footer>     
     <script src="./monitor/js/jquery/jquery-1.7.min.js"></script>
     <script src="./monitor/js/jquery/jquery-ui-1.8.16.custom.min.js"></script>
-    <script src="./monitor/js/monitor.js"></script>
-    <script src="./monitor/js/panel.js"></script>
     <script src="./monitor/js/highcharts/highcharts.js"></script>
     <!-- <script src="./monitor/js/highcharts/exporting.js"></script> -->
     <!-- <script src="./monitor/js/highcharts/highcharts-zh_CN.js"></script> -->
-    <script src="./monitor/js/charts.js"></script>
+    <script src="./monitor/js/monitor.js"></script>
+    <script src="./monitor/js/panel.js"></script>
 </body>
 </html>

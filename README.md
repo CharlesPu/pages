@@ -17,3 +17,8 @@ It is the website code of my master's topic, which is a research on RMCS based o
 **description:** 
 * Optimize the framework, separate **M** layer and **C** layer more clearly.
 * Define the database initially according to the Web front end and E-R, UML.
+
+**date:&emsp;&emsp;&emsp;2018-12-17**  
+**version:&emsp;&emsp;0.8.0**  
+**description:** 
+* Focus on finishing .js and .php in **monitor/** based on new database structure. 

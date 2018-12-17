@@ -1,142 +1,121 @@
 /***
  * Author: Charles
- * Date  : 2018-05-20
+ * Date  : 2018-12-16
  * E-mail:pu17rui@sina.com
+ * Others:a comfortable afternoon...
 ***/
 // jQuery.noConflict();
 jQuery(window).load(function(){
-
 });
-jQuery(document).ready(function(){										
-	// GetAllData();
-	// SetMtControlVal();
-	// Animate();
-	// test();
+jQuery(document).ready(function(){						
+	GetAllData();
+	SetControlVal();
 });
 /***********************************************************************************************
 *******************************************我添加的部分！****************************************
 ***********************************************************************************************/
 function GetAllData() {
-	var loc_nam=jQuery(".topheader .slogan").text();
-	var sta_id=jQuery("div.header ul.headermenu li.current").attr("id");
+	var sta_id = jQuery("div.header ul.headermenu li.current").attr("id");
 	jQuery.ajax({
 		type:"get",
-		url:"./index.php?pos=monitor&loc_name=" + loc_nam + "&sta_id=" + sta_id + "&obj=panel&act=GetAllData",
+		url:"./index.php?pos=monitor&sta_id=" + sta_id + "&obj=panel&act=GetAllData",
 
 		success:function(msg,status){
 			// alert(msg);
 			msg = eval('(' + msg + ')'); //decode json
-			//cylinders
-			for (var i = 0; i < Count(msg.Cylinders); i++) {
-				/***** plug animation*****/
-				// var dis =  39.5- msg.Cylinders[i].plug_position * 0.098;
-				// var cy_id = "cy" + msg.Cylinders[i].device_id; 	
-				// jQuery(".contentwrapper .cylinders ."+cy_id+" .plug").animate({top:dis+'%'},'slow');
-				/***** plug position*****/
-				jQuery("#contentwrapper .cylinders .cy" + msg.Cylinders[i].device_id + 
-					" .cylinder .distance span").html(parseFloat(msg.Cylinders[i].plug_position).toFixed(2));
-				
-				/******cylinders pressure*******/
-				jQuery("#contentwrapper .cylinders .cy" + msg.Cylinders[i].device_id + 
-					" .cylinder .pressure span").html(parseFloat(msg.Cylinders[i].pressure).toFixed(2));
+			//blade
+			UpdateAmplitude(chart.series[0], chart, msg.BladePosi);
+			//sys state
+			jQuery("#contentwrapper #sys-state #sys-para #blade-am span").html(parseFloat(msg.SysState.bl_am).toFixed(2));
+			jQuery("#contentwrapper #sys-state #sys-para #blade-eff-cnt span").html(msg.SysState.bl_eff_cnt);
+			jQuery("#contentwrapper #sys-state #sys-para #cylinder-am span").html(parseFloat(msg.SysState.cy_am).toFixed(2));
+			jQuery("#contentwrapper #sys-state #sys-para #cylinder-eff-cnt span").html(msg.SysState.cy_eff_cnt);
+			jQuery("#contentwrapper #sys-state #sys-alarm #alarm_no span").html(msg.SysState.alm_no);
+			jQuery("#contentwrapper #sys-state #sys-alarm #alarm_ctx").html(msg.SysState.alm_ctx);
+			//cylinder
+			for (var i = 0; i < 4; i++) {
+				var posi = msg.CyPosi[i].cy_posi;
+				var dis = -posi / 8 + 50;
+				jQuery(".contentwrapper #cylinder #cy-"+(i+1)+" .arrow").css("background-position","100% "+dis+'%');
 			}
-			//  motors
-			jQuery("#contentwrapper .motors").find("button").css("background","rgba(0,72,152,0.8)");
 
-			for (var i = 0; i < Count(msg.Motors); i++) {
-				/******state (word)******/
-				/******1--running   0--prepare******/
-				jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + 
-					"')").siblings(".motorstate").find("span").text(msg.Motors[i].state>0?"运行中":"停止");
-				/******state (pictrue)******/
-				if(msg.Motors[i].state > 0){ // is running
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')").parent().removeClass("prepare");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')").parent().addClass("running");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')")
-							.siblings(".motor-state-ctrl").find("button").text("停止");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')")
-							.siblings(".motor-state-ctrl").find("button").css("background","rgba(230,0,32,0.8)");
-				}else{	// is preparing
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')").parent().removeClass("running");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')").parent().addClass("prepare");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')")
-							.siblings(".motor-state-ctrl").find("button").text("启动");
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')")
-							.siblings(".motor-state-ctrl").find("button").css("background","rgba(0,72,152,0.8)");		
-				}
-				/******    rpm   ******/
-				if (msg.Motors[i].rpm != null) 
-					jQuery("#contentwrapper .motors .motorid:contains('" + msg.Motors[i].device_id + "')")
-							.siblings(".motorspeed").find("span").text(msg.Motors[i].rpm);				
-			}
-			//  angles
-			jQuery("#contentwrapper #angles .x_axis span").html(parseFloat(msg.Angles[0].x_angle).toFixed(2));
-			jQuery("#contentwrapper #angles .y_axis span").html(parseFloat(msg.Angles[0].y_angle).toFixed(2));		
-			// alerts
-			if (Count(msg.Alerts) > 0) {
-				var alert_msg = "<ul>";
-				for (var i = 0 ; i < Count(msg.Alerts); i++) {
-					alert_msg += ("<li>" + msg.Alerts[i].pump_station_id+"号泵站 "+msg.Alerts[i].content +"</li>");
-				}
-				alert_msg += "</ul>";
-				jQuery("#contentwrapper #alerts p").html("注意！有"+Count(msg.Alerts)+"条警告信息！");
-				jQuery("#contentwrapper #alerts p").css("color","rgba(230,0,32,1)");
-				jQuery("#contentwrapper #alerts .alert_msgs").html(alert_msg);
-				// alert(msg.Alerts[0].content);
-			}else{
-				jQuery("#contentwrapper #alerts p").html("目前状态良好，没有警告消息");
-				jQuery("#contentwrapper #alerts p").css("color","#666");
-				jQuery("#contentwrapper #alerts .alert_msgs").html("");
-			}
-			GetAllData();
+			setTimeout("GetAllData()",1000);
 		},
 		error:function(msg,status){
-			GetAllData();
+			// alert(msg);
+			setTimeout("GetAllData()",1000);
 		}
 	});
-	// setTimeout("GetAllData()",200);
 }
-function SetMtControlVal(){
-	var loc_nam=jQuery(".topheader .slogan").text();
+function SetControlVal() {
 	var sta_id=jQuery("div.header ul.headermenu li.current").attr("id");
-	jQuery("#contentwrapper .motors button").click(function(){
-		// if (jQuery(this).siblings("input").val() == "")
-		// 	alert("请输入控制值！");
-		// else
-		{
-			var dev_id=jQuery(jQuery(this).parent()).siblings("div.motorid").text();
-			var arr = jQuery(this).parents("div").attr("class").split("-");
-			var json_str = "[";
-			for (var i = 1; i <= 8; i++) {
-				if (jQuery("#contentwrapper .motors .mt" + i).children(".motorid").text() == dev_id) {
-					json_str += '{"dev_name":"'+ arr[0] +'","dev_id":"' + dev_id + '","ctrl_param":"'+arr[1]+'","ctrl_value": "'
-					+ (jQuery(jQuery(this).parent()).parent().hasClass("prepare")==true?1:0) +'"},';
-				}else
-				json_str += '{"dev_name":"'+ arr[0] +'","dev_id":"' + jQuery("#contentwrapper .motors .mt" + i).children(".motorid").text()
-							+ '","ctrl_param":"'+arr[1]+ '","ctrl_value": "'
-							+ (jQuery("#contentwrapper .motors .mt" + i).hasClass("prepare")==true?0:1)+'"},';
-			}
-			json_str += "]";
-			// alert(json_str);
-			json_str = eval('(' + json_str + ')'); //转化为json对象
-			
+	jQuery("#contentwrapper #sys-param-ctrl button").click(function(){
+		var blade_am_set = jQuery("#contentwrapper #sys-param-ctrl #blade-am-set input").val();
+		var blade_cnt_set = jQuery("#contentwrapper #sys-param-ctrl #blade-cnt-set input").val();
+		var cylinder_am_set = jQuery("#contentwrapper #sys-param-ctrl #cylinder-am-set input").val();
+		var cylinder_t_set = jQuery("#contentwrapper #sys-param-ctrl #cylinder-t-set input").val();
+		if (blade_am_set == "" || blade_cnt_set == "" || cylinder_am_set == "" || cylinder_t_set == "") {
+			alert("请将数据输入完整！");
+		}else{
 			jQuery.ajax({
 				type:"post",
-				url:"./index.php?pos=monitor&loc_name=" + loc_nam + "&sta_id=" + sta_id + "&obj=panel&act=ControlDevices",
+				url:"./index.php?pos=monitor&sta_id=" + sta_id + "&obj=panel&act=SetSysParams",
 				data:{
-					json_obj:json_str,
+					blade_am_set:blade_am_set,
+					blade_cnt_set:blade_cnt_set,
+					cylinder_am_set:cylinder_am_set,
+					cylinder_t_set:cylinder_t_set,
 				},
-				dataType:"text",
 				success:function(msg, status){
-					if(msg == 8) alert("指令已成功下达！");
-					else alert("指令下达失败!");
 					// alert(msg);
+					if(msg == -1) alert("您并没有控制权限，请联系网站管理员！");
+					else alert("指令下达成功！");
 				},
-				error:function(msg,status){
-
-				}
+				error:function(msg,status){ alert("指令下达失败!"); }
 			});
 		}	
+	});
+	jQuery("#contentwrapper #cylinder .cy button.clk").click(function(){
+		var act = jQuery(this).attr("class").split(" ")[0];
+		var cy_id = jQuery(this).parents("div.cy").attr("id").split("-")[1];
+		jQuery.ajax({
+			type:"post",
+			url:"./index.php?pos=monitor&sta_id=" + sta_id + "&obj=panel&act=SetCyOnetimeClk",
+			data:{
+				cy_id:cy_id,
+				act:act,
+			},
+			success:function(msg, status){
+				// alert(msg);
+				if(msg == -1) alert("您并没有控制权限，请联系网站管理员！");
+				else alert("指令下达成功！");
+			},
+			error:function(msg,status){ alert("指令下达失败!"); }
+		});
+	});
+	jQuery("#contentwrapper #cylinder .cy button.run").click(function(){
+		var cy_id = jQuery(this).parents("div.cy").attr("id").split("-")[1];
+		var single_cy_am = jQuery(this).siblings(".single-cy-am").children("input").val();
+		var single_cy_t = jQuery(this).siblings(".single-cy-t").children("input").val();
+		if (single_cy_am == "" || single_cy_t == "") {
+			alert("请将数据输入完整！");
+		}else {
+			jQuery.ajax({
+				type:"post",
+				url:"./index.php?pos=monitor&sta_id=" + sta_id + "&obj=panel&act=SetSingleCyParams",
+				data:{
+					cy_id:cy_id,
+					single_cy_am:single_cy_am,
+					single_cy_t:single_cy_t,
+				},
+				success:function(msg, status){
+					// alert(msg);
+					if(msg == -1) alert("您并没有控制权限，请联系网站管理员！");
+					else alert("指令下达成功！");
+				},
+				error:function(msg,status){ alert("指令下达失败!"); }
+			});	
+		}		
 	});
 }
 
@@ -155,17 +134,72 @@ function Count(obj){
     }
     return false;
 }
-function Animate(){
-	for (var i = 1; i <= 4; i++) {
-		var posi = jQuery("#contentwrapper .cylinders .cy" + i + " .cylinder .distance span").html();
-		var dis = 39.5 - posi * 0.098;
-		var cy_id = "cy" + i; 	
-		jQuery(".contentwrapper .cylinders ."+cy_id+" .plug").animate({top:dis+'%'},10);
+
+/****************************************** highcharts****************************************/
+function UpdateAmplitude(series, chart, val) {
+	var x = (new Date()).getTime(); // 当前时间
+	// var	y = Math.random();          // 随机值
+	var y = parseFloat(val);
+	/* draw~ */
+	var len = series.points.length;
+	if (len < 20) series.addPoint([x, y], true, false);
+		else series.addPoint([x, y], true, true);
+	activeLastPointTooltip(chart);
+}
+Highcharts.setOptions({
+	global: {
+		useUTC: false
 	}
-	setTimeout("Animate()", 100);
+});
+function activeLastPointTooltip(chart) {
+	var points = chart.series[0].points;
+	chart.tooltip.refresh(points[points.length -1]);
 }
-
-function test() {
-	jQuery("#contentwrapper .motors .motorid:contains('1#_A1')").siblings(".motorstate").find("span").text("hah");
-}
-
+var chart = Highcharts.chart('blade-amplitude-chart', {
+	chart: {
+		type: 'spline',
+		marginRight: 10,
+		// events: {
+		// 	load: function () {
+		// 		var series = this.series[0],
+		// 			chart  = this;
+		// 		if enable this func below, tooltip will not find x and y, because data is empty
+		// 		// activeLastPointTooltip(chart);
+		// 		// UpdateAmplitude(series, chart);
+		// 	}
+		// }
+	},
+	title: {
+		// text: '动态模拟实时数据'
+		text:null
+	},
+	xAxis: {
+		type: 'datetime',
+		/*time(ms) between two x points*/
+		tickInterval: 1000,
+		// tickPixelInterval: 150,
+	},
+	yAxis: {
+		title: {
+			text: null
+		}
+	},
+	tooltip: {
+		// enabled: false,
+		formatter: function () {
+			return '<b>' + this.series.name + '</b><br/>' +
+					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+					Highcharts.numberFormat(this.y, 2);
+		}
+	},
+	legend: {
+		enabled: false
+	},
+	credits: {
+		enabled: false,
+	},
+	series: [{
+		name: '叶片实时位置',
+		data: [],
+	}]
+});

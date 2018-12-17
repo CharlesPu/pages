@@ -4,8 +4,8 @@ $(document).ready(function(){
     var ipc_dev_id = GetIPCInfo();
     // alert(ipc_dev_id);
     if (ipc_dev_id == "") {
-        alert("this ipc in this location is illegal!");
-        jQuery("div#rtmp-publisher").text("illegal ipc");
+        alert("There exists no ipc in this sation!");
+        jQuery("div#rtmp-publisher").text("none ipc");
     }else{
 /******************swfobject********************/                                 
         // var flashVars = {
@@ -36,7 +36,6 @@ $(document).ready(function(){
         });
         HeartBeatPacket("start",ipc_dev_id);
     }
-
 });
 
 function GetIPCInfo(){

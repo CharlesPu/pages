@@ -29,7 +29,7 @@
 					$co_id = $login_model->GetCompanyID($name);
 					BaseController::GoToURL("?pos=monitor&co_id=$co_id&sta_id=1");
 				}else
-				if (!strcmp($type, 'certific')) {
+				if (!strcmp($type, 'certif')) {
 
 				}
 			}
