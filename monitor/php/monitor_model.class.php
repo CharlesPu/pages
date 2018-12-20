@@ -71,6 +71,9 @@ class MonitorModel extends BaseModel {
 		}else {
 			$res = $this->db->query("INSERT INTO SingleCyControlPara (SingleCyCtrl_CompanyID,SingleCyCtrl_StationID,SingleCyCtrl_CyID,$act_field) VALUES ($co_id,$sta_id,$cy_id,1)");
 		}		
+		$this->db->query("ALTER TABLE SingleCyControlPara DROP SingleCyCtrl_ID");
+		$this->db->query("ALTER TABLE SingleCyControlPara ADD SingleCyCtrl_ID int(10) NOT NULL AUTO_INCREMENT FIRST,ADD PRIMARY KEY(SingleCyCtrl_ID)");
+
 		return $res;
 	}
 
